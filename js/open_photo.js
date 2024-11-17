@@ -5,13 +5,14 @@ const bigPictureImage = bigPicture.querySelector('.big-picture__img > img');
 const bigPictureDescription = bigPicture.querySelector('.social__caption');
 const bigPictureLikesCount = bigPicture.querySelector('.likes-count');
 const bigPictureCommentsCount = bigPicture.querySelector('.comments-count');
+const bigPictureShownCommentsCount = bigPicture.querySelector('.shown-comments-count');
 const bigPictureComments = bigPicture.querySelector('.social__comments');
-const bigPictureSocialCommentsCount = bigPicture.querySelector('.social__comment-count');
 const bigPictureCommentsLoader = bigPicture.querySelector('.comments-loader');
+let generateMoreComments;
 
 
-function createCommentsFragment(comments) {
-  const commentsFragment = document.createDocumentFragment();
+function GetAllCommentsElements(comments) {
+  const commentsList = [];
 
   comments.forEach((comment) => {
     const commentElement = document.createElement('li');
@@ -30,11 +31,45 @@ function createCommentsFragment(comments) {
     commentText.textContent = comment.message;
     commentElement.appendChild(commentText);
 
-    commentsFragment.appendChild(commentElement);
+    commentsList.push(commentElement);
   });
 
-  return commentsFragment;
+  return commentsList;
 }
+
+// returns some more comments and if there are more comments to be shown
+const createCommentsGenerator = (allComments, step) => {
+  let currentIndex = 0;
+
+  return () => {
+    if (currentIndex >= allComments.length) {
+      return { moreComments: [], countShownComments: currentIndex, runOut: true };
+    }
+
+    const nextIndex = Math.min(currentIndex + step, allComments.length);
+    const moreComments = allComments.slice(currentIndex, nextIndex);
+    currentIndex = nextIndex;
+
+    return {
+      moreComments: moreComments,
+      countShownComments: currentIndex,
+      runOut: currentIndex >= allComments.length
+    };
+  };
+};
+
+const showMoreComments = () => {
+  const {moreComments, countShownComments, runOut} = generateMoreComments();
+  bigPictureShownCommentsCount.textContent = countShownComments;
+
+  moreComments.forEach((comment) => {
+    bigPictureComments.appendChild(comment);
+  });
+
+  if (runOut) {
+    bigPictureCommentsLoader.classList.add('hidden');
+  }
+};
 
 const onDocumentKeydown = (evt) => {
   if (evt.key === 'Escape') {
@@ -54,11 +89,12 @@ export const openPhoto = (photo) => {
   bigPictureLikesCount.textContent = photo.likes;
   bigPictureCommentsCount.textContent = photo.comments.length;
   bigPictureComments.innerHTML = '';
-  bigPictureComments.appendChild(createCommentsFragment(photo.comments));
+  bigPictureCommentsLoader.classList.remove('hidden');
 
-  // Разобраться в следующих практиках
-  bigPictureSocialCommentsCount.classList.add('hidden');
-  bigPictureCommentsLoader.classList.add('hidden');
+  generateMoreComments = createCommentsGenerator(GetAllCommentsElements(photo.comments), 5);
+  showMoreComments();
+
+  bigPictureCommentsLoader.addEventListener('click', showMoreComments);
 
   document.addEventListener('keydown', onDocumentKeydown);
   body.classList.add('modal-open');
@@ -66,6 +102,7 @@ export const openPhoto = (photo) => {
 
 const closePhoto = () => {
   bigPicture.classList.add('hidden');
+  bigPictureCommentsLoader.removeEventListener('click', generateMoreComments);
   document.removeEventListener('keydown', onDocumentKeydown);
   body.classList.remove('modal-open');
 };
