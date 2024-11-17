@@ -1,4 +1,5 @@
 import { createPhotoDescriptions } from './data.js';
+import { openPhoto } from './open_photo.js';
 
 const mitiatureTemplate = document.querySelector('#picture');
 const miniaturesFragment = document.createDocumentFragment();
@@ -13,6 +14,10 @@ createPhotoDescriptions().forEach((photo) => {
   miniatureImage.alt = photo.description;
   miniatureLikes.textContent = photo.likes;
   miniatureComments.textContent = photo.comments.length;
+
+  miniature.addEventListener('click', () => {
+    openPhoto(photo);
+  });
 
   miniaturesFragment.appendChild(miniature);
 });
