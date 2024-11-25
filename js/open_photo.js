@@ -108,7 +108,5 @@ const closePhoto = () => {
 };
 
 
-hideBigPictureBtn.addEventListener('click', () => {
-  closePhoto();
-});
+hideBigPictureBtn.addEventListener('click', closePhoto);
 
