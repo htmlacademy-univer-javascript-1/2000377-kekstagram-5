@@ -1,7 +1,7 @@
 const form = document.querySelector('.img-upload__form');
 const hashtagsInput = document.querySelector('.text__hashtags');
 
-let errorMessage = 'хер тебе';
+let errorMessage = 'Неверный ввод';
 
 export const pristine = new Pristine(form, {
   classTo: 'img-upload__field-wrapper',

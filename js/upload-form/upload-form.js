@@ -1,4 +1,5 @@
-import { pristine } from './validate_form.js';
+import { pristine } from './validate-form.js';
+import './edit-picture.js';
 
 const body = document.querySelector('body');
 const imgUploadInput = document.querySelector('.img-upload__input');

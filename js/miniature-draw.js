@@ -1,5 +1,5 @@
 import { createPhotoDescriptions } from './data.js';
-import { openPhoto } from './open_photo.js';
+import { openPhoto } from './open-photo.js';
 
 const mitiatureTemplate = document.querySelector('#picture');
 const miniaturesFragment = document.createDocumentFragment();
