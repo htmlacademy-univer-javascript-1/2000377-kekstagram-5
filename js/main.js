@@ -1,2 +1,2 @@
-import './miniature_draw.js';
-import './upload_form/upload_form.js';
+import './miniature-draw.js';
+import './upload-form/upload-form.js';
