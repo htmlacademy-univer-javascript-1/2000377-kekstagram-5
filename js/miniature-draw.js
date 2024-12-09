@@ -1,26 +1,29 @@
-import { createPhotoDescriptions } from './data.js';
 import { openPhoto } from './open-photo.js';
 
-const mitiatureTemplate = document.querySelector('#picture');
-const miniaturesFragment = document.createDocumentFragment();
+const miniatureTemplate = document.querySelector('#picture');
 
-createPhotoDescriptions().forEach((photo) => {
-  const miniature = mitiatureTemplate.cloneNode(true).content.querySelector('.picture');
-  const miniatureImage = miniature.querySelector('.picture__img');
-  const miniatureLikes = miniature.querySelector('.picture__likes');
-  const miniatureComments = miniature.querySelector('.picture__comments');
 
-  miniatureImage.src = photo.url;
-  miniatureImage.alt = photo.description;
-  miniatureLikes.textContent = photo.likes;
-  miniatureComments.textContent = photo.comments.length;
+export const renderMiniatures = (photoDescriptions) => {
+  const miniaturesFragment = document.createDocumentFragment();
 
-  miniature.addEventListener('click', () => {
-    openPhoto(photo);
+  photoDescriptions.forEach((photo) => {
+    const miniature = miniatureTemplate.cloneNode(true).content.querySelector('.picture');
+    const miniatureImage = miniature.querySelector('.picture__img');
+    const miniatureLikes = miniature.querySelector('.picture__likes');
+    const miniatureComments = miniature.querySelector('.picture__comments');
+
+    miniatureImage.src = photo.url;
+    miniatureImage.alt = photo.description;
+    miniatureLikes.textContent = photo.likes;
+    miniatureComments.textContent = photo.comments.length;
+
+    miniature.addEventListener('click', () => {
+      openPhoto(photo);
+    });
+
+    miniaturesFragment.appendChild(miniature);
   });
 
-  miniaturesFragment.appendChild(miniature);
-});
 
-
-document.querySelector('.pictures').appendChild(miniaturesFragment);
+  document.querySelector('.pictures').appendChild(miniaturesFragment);
+};
