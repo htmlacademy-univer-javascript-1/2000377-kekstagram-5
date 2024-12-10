@@ -64,7 +64,7 @@ noUiSlider.create(effectLevelSlider, {
   connect: 'lower'
 });
 
-function updateEffect() {
+export function updateEffect() {
   const currentEffect = document.querySelector('.effects__radio:checked').value;
   const { filter, range, step, unit } = effects[currentEffect];
 
