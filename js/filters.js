@@ -5,6 +5,8 @@ import { debounce } from './util.js';
 const RANDOM_PICTURES_COUNT = 10;
 const FILTER_DEBOUNCE_DELAY = 500;
 
+const ELEMENTS_BEFORE_MINIATURES_COUNT = 2;
+
 const picturesElement = document.querySelector('.pictures');
 
 const defaultFilterButton = document.querySelector('#filter-default');
@@ -61,8 +63,8 @@ function clearPictures() {
   // Удаляем все дочерние элементы, кроме первых двух:
   // первый - заголовок "Фотографии других пользователей"
   // второй - поле для загрузки изображения на сайт
-  while (children.length > 2) {
-    picturesElement.removeChild(children[2]);
+  while (children.length > ELEMENTS_BEFORE_MINIATURES_COUNT) {
+    picturesElement.removeChild(children[ELEMENTS_BEFORE_MINIATURES_COUNT]);
   }
 }
 

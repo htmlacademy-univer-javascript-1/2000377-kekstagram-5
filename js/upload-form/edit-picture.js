@@ -1,5 +1,9 @@
-const previewImg = document.querySelector('.img-upload__preview img');
+const MIN_PICTURE_SCALE = 25;
+const MAX_PICTURE_SCALE = 100;
+const PICTURE_SCALE_STEP = 25;
 
+
+const previewImg = document.querySelector('.img-upload__preview img');
 
 // Scale control
 const scaleControlSmaller = document.querySelector('.scale__control--smaller');
@@ -22,8 +26,8 @@ function changePictureScale() {
 
 scaleControlSmaller.addEventListener('click', () => {
   scaleControlValue.value = intToPercent(Math.max(
-    percentToInt(scaleControlValue.value) - 25,
-    25
+    percentToInt(scaleControlValue.value) - PICTURE_SCALE_STEP,
+    MIN_PICTURE_SCALE
   ));
   changePictureScale();
 });
@@ -31,8 +35,8 @@ scaleControlSmaller.addEventListener('click', () => {
 
 scaleControlBigger.addEventListener('click', () => {
   scaleControlValue.value = intToPercent(Math.min(
-    percentToInt(scaleControlValue.value) + 25,
-    100
+    percentToInt(scaleControlValue.value) + PICTURE_SCALE_STEP,
+    MAX_PICTURE_SCALE
   ));
   changePictureScale();
 });
@@ -90,8 +94,8 @@ export function updateEffect() {
   }
 }
 
-effectButtons.forEach((button) => {
-  button.addEventListener('change', updateEffect);
+effectButtons.forEach((effectButton) => {
+  effectButton.addEventListener('change', updateEffect);
 });
 
 updateEffect();

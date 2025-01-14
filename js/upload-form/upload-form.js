@@ -1,7 +1,7 @@
-/* eslint-disable no-use-before-define */
 import { pristine } from './validate-form.js';
 import { postData } from '../api.js';
 import { updateEffect } from './edit-picture.js';
+import { isEscapeKey } from '../util.js';
 
 const body = document.querySelector('body');
 const imgUploadInput = document.querySelector('.img-upload__input');
@@ -9,8 +9,8 @@ const imgUploadOverlay = document.querySelector('.img-upload__overlay');
 const imgUploadForm = document.querySelector('.img-upload__form');
 const imgUploadCancel = document.querySelector('.img-upload__cancel');
 const previewImg = imgUploadForm.querySelector('.img-upload__preview img');
-const descriptionInput = imgUploadForm.querySelector('.text__description');
-const hashtagsInput = imgUploadForm.querySelector('.text__hashtags');
+const descriptionInputElement = imgUploadForm.querySelector('.text__description');
+const hashtagsInputElement = imgUploadForm.querySelector('.text__hashtags');
 const scaleControlInput = imgUploadForm.querySelector('.scale__control--value');
 const effectLevelRadios = imgUploadForm.querySelectorAll('.effects__radio');
 const effectsPreview = imgUploadForm.querySelectorAll('.effects__preview');
@@ -23,9 +23,9 @@ const message = {
 
 
 const onDocumentKeydown = (evt) => {
-  if (evt.key === 'Escape') {
+  const errorMessageElement = document.querySelector('.error');
+  if (isEscapeKey(evt) && !errorMessageElement) {
     evt.preventDefault();
-    // eslint-disable-next-line no-use-before-define
     closePreview();
   }
 };
@@ -50,10 +50,11 @@ function closePreview () {
 
   previewImg.src = '';
   imgUploadInput.value = '';
-  descriptionInput.value = '';
-  hashtagsInput.value = '';
+  descriptionInputElement.value = '';
+  hashtagsInputElement.value = '';
   scaleControlInput.value = '100%';
   effectLevelRadios[0].checked = true;
+  previewImg.style.transform = 'scale(1)';
   updateEffect();
 
   document.querySelectorAll('.pristine-error').forEach((errorMessage) => {
@@ -83,17 +84,18 @@ function showMessage(messageType) {
 
   messageElement.querySelector('button').addEventListener('click', removeMessage);
 
-  const onEscKeydown = (evt) => {
-    if (evt.key === 'Escape') {
+  function onEscKeydown(evt) {
+    if (isEscapeKey(evt)) {
       removeMessage();
     }
-  };
+  }
 
-  const onOutsideClick = (evt) => {
+  function onOutsideClick(evt) {
     if (!messageInner.contains(evt.target)) {
       removeMessage();
     }
-  };
+  }
+
   document.addEventListener('keydown', onEscKeydown);
   document.addEventListener('click', onOutsideClick);
 
@@ -121,15 +123,15 @@ imgUploadForm.addEventListener('submit', (event) => {
         submitButton.disabled = false;
       });
   } else {
-    hashtagsInput.focus();
+    hashtagsInputElement.focus();
   }
 });
 
 
 function escStopPropagation(evt) {
-  if (evt.key === 'Escape') {
+  if (isEscapeKey(evt)) {
     evt.stopPropagation();
   }
 }
-descriptionInput.addEventListener('keydown', escStopPropagation);
-hashtagsInput.addEventListener('keydown', escStopPropagation);
+descriptionInputElement.addEventListener('keydown', escStopPropagation);
+hashtagsInputElement.addEventListener('keydown', escStopPropagation);

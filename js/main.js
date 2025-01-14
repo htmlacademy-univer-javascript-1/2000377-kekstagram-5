@@ -2,17 +2,11 @@ import { getData } from './api.js';
 import {renderMiniatures} from './miniature-draw.js';
 import { initFilters } from './filters.js';
 import './upload-form/upload-form.js';
-import { createPhotoDescriptions } from './data.js';
+
+const GET_DATA_ERROR_MESSAGE_TIMEOUT = 10000;
 
 
 getData()
-  .catch(() => {
-    // eslint-disable-next-line no-console
-    console.warn('Не удалось загрузить данные, взяты картинки по умолчанию');
-    return new Promise((resolve) => {
-      resolve(createPhotoDescriptions());
-    });
-  })
   .then((data) => {
     renderMiniatures(data);
     return data;
@@ -22,5 +16,18 @@ getData()
     initFilters(data);
   })
   .catch((error) => {
-    throw new Error(error);
+    showGetDataErrorMessage(error.message);
   });
+
+
+function showGetDataErrorMessage() {
+  const errorMessage = document.createElement('div');
+  errorMessage.classList.add('get-data-error-message');
+  errorMessage.textContent = 'Не удалось загрузить данные. Пожалуйста, перезагрузите страницу';
+
+  document.querySelector('main').insertAdjacentElement('afterbegin', errorMessage);
+
+  setTimeout(() => {
+    errorMessage.remove();
+  }, GET_DATA_ERROR_MESSAGE_TIMEOUT);
+}

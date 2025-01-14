@@ -1,3 +1,6 @@
+const MAX_HASHTAG_LENGTH = 19; // Без решетки
+const MAX_HASHTAGS_COUNT = 5;
+
 const form = document.querySelector('.img-upload__form');
 const hashtagsInput = document.querySelector('.text__hashtags');
 
@@ -24,19 +27,24 @@ function getErrorMessage() {
 }
 
 function isInvalidHashtag(inputValue) {
-  const hashtagRegex = /(^|\s)(#[A-Za-zА-Яа-яёЁ0-9]{1,19})(?=\s|$)/g;
+  const hashtagRegex = new RegExp(`(^|\\s)(#[A-Za-zА-Яa-yayoЁ0-9]{1,${MAX_HASHTAG_LENGTH}})(?=\\s|$)`, 'g');
 
   if (inputValue === '') {
     return false;
   }
 
   const hashtags = inputValue.match(hashtagRegex);
+  const words = inputValue.trim().split(/\s+/);
 
   if (!hashtags) {
     return true;
   }
 
-  // Регистр
+  if (words.length !== hashtags.length) {
+    return true;
+  }
+
+  // Регистрация
   const uniqueHashtags = new Set(hashtags.map((tag) => tag.trim().toLowerCase()));
 
   if (uniqueHashtags.size !== hashtags.length) {
@@ -44,7 +52,7 @@ function isInvalidHashtag(inputValue) {
   }
 
   const nonHashtagPatterns = [
-    /(^|\s)([A-Za-zА-Яа-яёЁ0-9]+)/,
+    /(^|\s)([A-Za-zА-Яa-yayoЁ0-9]+)/,
     /[^ ]#/,
     /# /,
     /#$/
@@ -61,7 +69,7 @@ function isInvalidHashtag(inputValue) {
 
 function isExceededHashtagCount(hashtags) {
   const uniqueHashtags = [...new Set(hashtags.map((tag) => tag.trim()))];
-  return uniqueHashtags.length > 5;
+  return uniqueHashtags.length > MAX_HASHTAGS_COUNT;
 }
 
 function hasDuplicateHashtags(hashtags) {
